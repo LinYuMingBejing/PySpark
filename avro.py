@@ -20,5 +20,5 @@ df = df.filter(df["price"]<3000)
 if fs.exists(sc._jvm.org.apache.hadoop.fs.Path(output_path)):
     fs.delete(sc._jvm.org.apache.hadoop.fs.Path(output_path), True)
 
-df_webpages.repartition(1).write.format('com.databricks.spark.avro').save(output_path)
+df.repartition(1).write.format('com.databricks.spark.avro').save(output_path)
 
