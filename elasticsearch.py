@@ -10,6 +10,7 @@ import json
 sc = SparkContext()
 sqlContext = SQLContext(sc)
 
+
 def query_hotel_info(city, start_date, end_date):
     es_read_conf = {
             "es.nodes": "localhost",
@@ -45,8 +46,8 @@ def query_hotel_info(city, start_date, end_date):
         StructField("city", StringType(), True),
         StructField("ratings", StringType(), True),
         StructField("description", StringType(), True),
-        facilities('tourists', ArrayType(StringType())),
-        tourists('facilities', ArrayType(StringType()))
+        StructField('tourists', ArrayType(StringType())),
+        StructField('facilities', ArrayType(StringType()))
     ])
 
     q = json.dumps(query)

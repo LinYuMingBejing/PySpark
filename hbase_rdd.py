@@ -2,7 +2,7 @@ from pyspark import SparkContext
 from pyspark.sql.types import StructType, StructField, StringType,StructField, ArrayType
 from pyspark.sql import SQLContext
 
-"""該效率低下，不推薦使用該模式"""
+"""該方法效率低落，不推薦使用該模式"""
 
 sc = SparkContext()
 conf = {"hbase.zookeeper.property.clientPort":"2181",
