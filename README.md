@@ -87,3 +87,19 @@ spark-submit --name=jdbc_test --master yarn --deploy-mode cluster --packages mys
 ```
 spark-submit --name=hbase_test --master yarn --deploy-mode cluster --conf=spark.yarn.appMasterEnv.PYSPARK_PYTHON=/opt/pyspark/env/bin/python --jars shc-core-spark-2.3.0-hbase-2.1.0.jar,hbase-spark-1.2.0-cdh5.7.1.jar,shc-core-1.1.1-2.1-s_2.11.jar,hbase-client-2.2.4.jar,hbase-server-2.2.4.jar --driver-memory=5g --executor-memory=10g ./hbase_dataframe.py
 ```
+
+#### Note: How to allow multiple ips connect mongodb?
+
+* vim /etc/mongod.conf
+```
+    # bindIp: 127.0.0.1
+    bindIp: 0.0.0.0  
+```
+
+* firewall settings
+```
+$ sudo ufw enable
+$ sudo ufw deny  from 192.168.18.0/24 to any port 27017
+$ sudo ufw allow from 192.168.18.0/24 to any port 27017
+$ sudo ufw status
+```
