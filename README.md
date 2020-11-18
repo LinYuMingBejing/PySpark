@@ -96,10 +96,45 @@ spark-submit --name=hbase_test --master yarn --deploy-mode cluster --conf=spark.
     bindIp: 0.0.0.0  
 ```
 
+* restart mongodb
+```
+$ sudo service mongod restart
+$ sudo service mongod status
+```
+
 * firewall settings
 ```
 $ sudo ufw enable
 $ sudo ufw deny  from 192.168.18.0/24 to any port 27017
 $ sudo ufw allow from 192.168.18.0/24 to any port 27017
 $ sudo ufw status
+```
+
+#### Note: How to create multiple user on mongodb?
+
+* create user
+```
+> use booking;
+switched to db booking
+> db.createUser(
+  {
+    user: "dbadmin",
+    pwd: "StrongPassword",
+    roles: [ { role: "readWrite", db: "booking" } ]
+  }
+)
+> exit
+bye
+```
+
+* vim /etc/mongod.conf 
+```
+security:
+  authorization: enabled
+```
+
+* restart mongodb
+```
+$ sudo service mongod restart
+$ sudo service mongod status
 ```
