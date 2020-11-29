@@ -146,3 +146,10 @@ def toFormat(s):
 
 toFormat=udf(toFormat, StringType())
 df.withColumn('words',toFormat('keywords')).select("words").show()
+
+
+"""cache"""
+DF1.cache()
+DF2 = DF1.groupBy("DEST_COUNTRY_NAME").count().collect()
+DF3 = DF1.groupBy("ORIGIN_COUNTRY_NAME").count().collect()
+DF4 = DF1.groupBy("count").count().collect()
