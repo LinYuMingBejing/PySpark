@@ -44,11 +44,16 @@ $ source ~/.bashrc
 ```
 
 ### Introducing conf Directory.
-  +-- conf
-  |   +-- yarn-site.xml
-  |   +-- core-site.xml
+```
+.
+├── README.md
+└── conf
+    ├── core-site.xml
+    ├── hbase-site.xml
+    └── yarn-site.xml
+```
 
-* The core-site. xml file informs Hadoop daemon where NameNode runs in the cluster.
+* The core-site.xml file informs Hadoop daemon where NameNode runs in the cluster.
 
 * The yarn-site.xml file contains the configuration settings for HDFS daemons; the NameNode, the Secondary NameNode, and the DataNodes.
 
@@ -162,55 +167,3 @@ $ spark-submit \
 
   * To run an individual Task and return the result to the Driver.
   * It can cache (persist) the data in the Worker node.
-
-
-#### Note: How to allow multiple ips connect mongodb?
-
-* vim /etc/mongod.conf
-```
-    # bindIp: 127.0.0.1
-    bindIp: 0.0.0.0  
-```
-
-* restart mongodb
-```
-$ sudo service mongod restart
-$ sudo service mongod status
-```
-
-* firewall settings
-```
-$ sudo ufw enable
-$ sudo ufw deny  from 192.168.18.0/24 to any port 27017
-$ sudo ufw allow from 192.168.18.0/24 to any port 27017
-$ sudo ufw status
-```
-
-#### Note2: How to create multiple user on mongodb?
-
-* create user
-```
-> use booking;
-switched to db booking
-> db.createUser(
-  {
-    user: "dbadmin",
-    pwd: "StrongPassword",
-    roles: [ { role: "readWrite", db: "booking" } ]
-  }
-)
-> exit
-bye
-```
-
-* vim /etc/mongod.conf 
-```
-security:
-  authorization: enabled
-```
-
-* restart mongodb
-```
-$ sudo service mongod restart
-$ sudo service mongod status
-```
