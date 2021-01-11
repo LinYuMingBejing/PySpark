@@ -151,7 +151,7 @@ $ spark-submit \
 ```
 
 
-#### Note1 : Driver and Executor
+#### Spark Important Concept
 
 ![Spark Architecture](https://blog.knoldus.com/wp-content/uploads/2019/12/Image-1-1.png)
 
@@ -160,10 +160,45 @@ $ spark-submit \
   * Each Worker node consists of one or more Executor(s) who are responsible for running the Task. Executors register themselves with Driver. The Driver has all the information about the Executors at all the time.
 
 + Driver
-  * Driver is a Java process. This is the process where the main() method of our Scala, Java, Python program runs.
-
+  * 掌控Spark應用程式的程序，維護叢集的所有狀態。
 
 + Executor
+  * 取得Driver分配的任務、執行，並回報狀態與結果。
 
-  * To run an individual Task and return the result to the Driver.
-  * It can cache (persist) the data in the Worker node.
+#### Spark 生命週期(外部)
++ 啟動
+    * Driver程序已放置到叢集中，並且開始執行使用者的程式碼。程式碼必須包含SparkSession以初始化Spark叢集，SparkSession接著會與叢集管理員溝通，要求在叢集啟動Spark executor 程序，使用者透過原先spark-submit 命令列參數可設定 executor 數量及相關設定。
+    * 叢集管理員啟動executor程序作出回應，並發送包含executor位置的相關資訊給Driver程序，待一切都正確連結就建立了Spark叢集。
+
++ 執行
+    * 有了Spark叢集之後，Spark接著會執行程式碼，Driver與工作節點會互相溝通、執行程式碼及移動資料，Driver負責排定任務至各工作節點，各節點則回報任務執行的成功或失敗狀態。
+
++ 完成
+    * Spark完成後，Driver會回報成功或失敗狀態並關閉。
+
+
+#### Spark 生命週期(內部)
++ SparkSession
+    * 透過SparkSession的builder方法，此方法可實體化Spark及SQL Contexts並確保沒有context衝突。有了SparkSession就可以執行Spark程式碼。
+
++ SparkContext
+    * SparkSession中的SparkContext物件代表與Spark叢集的連結，此類別可與某些低階API溝通，並且建立RDD、累加器、及廣播變數，使程式碼可在叢集上執行。
+
++ 邏輯指示
+    * Spark如何將程式碼轉為實際在叢集上運行的指令
+
++ Spark工作
+    * 一個Action對應一個Spark工作，Action總是會返回結果，每個工作又可拆分為一系列階段，階段數取決於有多少洗牌操作發生。
+
++ 階段
+    * Spark的階段代表的是一群任務。 Spark會盡可能在同一階段包含越多工作，但在發生洗牌操作後，會啟動一個新的階段，洗牌代表資料重新分區。
+
++ 任務
+    * Spark階段由任務組成，每個任務與在單一executor執行的資料區塊與轉換操作有關，例如一個資料只分布在大分區，則只會有一個任務；1000個小分區，則會有1000個可平行執行的任務。
+
++ 排程器
+    * Spark排程器預設以FIFO方式執行，如果堆疊最前面的工作不需使用整個叢集，後面的工作可以立刻開始執行；反之，則會延遲後面的工作。
+
+    * 亦可以將工作設定為公平分享模式，在此模式下，Spark以輪替方式在工作間賦予任務，所有工作可共享叢集資源，表示小型工作在大型工作正在執行時可立刻獲得資源，無需等待大型工作結束。
+
+    * 在設定SparkContext時可以將spark.scheduler.mode property設為FAIR。
